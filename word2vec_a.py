@@ -1,14 +1,14 @@
-corpus = ['king is a strong man', 
-          'queen is a wise woman', 
-          'boy is a young man',
-          'girl is a young woman',
-          'prince is a young king',
-          'princess is a young queen',
-          'man is strong', 
-          'woman is pretty',
-          'prince is a boy will be king',
-          'princess is a girl will be queen']
+import dill
+with open('motion_capture_20181011-1931.dill', 'rb') as f:
+    x = dill.load(f)
+vec = [l[4] for l in x]
+#print(len(vec))
 
+x = map(str, x)
+x = list(x)
+print(type(x))
+print(len(x))
+'''
 def remove_stop_words(corpus):
     stop_words = ['is', 'a', 'will', 'be']
     results = []
@@ -21,8 +21,8 @@ def remove_stop_words(corpus):
     
     return results
 
-corpus = remove_stop_words(corpus)
-
+corpus = remove_stop_words(corpus) '''
+corpus = x
 words = []
 for text in corpus:
     for word in text.split(' '):
