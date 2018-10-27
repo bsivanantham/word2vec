@@ -168,6 +168,36 @@ class word2vec():
 
 #--- EXAMPLE RUN --------------------------------------------------------------+
 
+import dill
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+
+with open('motion_capture_20181011-1931.dill', 'rb') as f:
+    x = dill.load(f)
+vec = [l[4] for l in x]
+#print(len(vec))
+
+x = map(str, vec)
+x = list(x)
+print(type(x))
+print(len(x))
+
+def remove_stop_words(corpus):
+    stop_words = [', ']
+    results = []
+    for text in corpus:
+        tmp = text.split(' ')
+        for stop_word in stop_words:
+            if stop_word in tmp:
+                tmp.remove(stop_word)
+        results.append(" ".join(tmp))
+    print(results)
+    return results
+
+x = remove_stop_words(x)
+X_train , X_test = train_test_split(x,test_size = 0.33 , shuffle =False)
+
 settings = {}
 settings['n'] = 5                   # dimension of word embeddings
 settings['window_size'] = 2         # context window +/- center word
@@ -177,7 +207,7 @@ settings['neg_samp'] = 10           # number of negative words to use during tra
 settings['learning_rate'] = 0.01    # learning rate
 np.random.seed(0)                   # set the seed for reproducibility
 
-corpus = [['the','quick','brown','fox','jumped','over','the','lazy','dog']]
+corpus = [X_train]
 
 # INITIALIZE W2V MODEL
 w2v = word2vec()
@@ -190,6 +220,8 @@ w2v.train(training_data)
 
 print ('Training data length',len(training_data))
 print ('Training data 0',training_data[0])
-print ('Vector of the word',w2v.word_vec('the'))
+
+
+#print ('Vector of the word',w2v.word_vec('the'))
 
 #--- END ----------------------------------------------------------------------+

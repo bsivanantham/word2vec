@@ -1,16 +1,22 @@
 import dill
+import pandas as pd
+import tensorflow as tf
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+
 with open('motion_capture_20181011-1931.dill', 'rb') as f:
     x = dill.load(f)
 vec = [l[4] for l in x]
 #print(len(vec))
 
-x = map(str, x)
+x = map(str, vec)
 x = list(x)
 print(type(x))
 print(len(x))
-'''
+
 def remove_stop_words(corpus):
-    stop_words = ['is', 'a', 'will', 'be']
+    stop_words = [', ']
     results = []
     for text in corpus:
         tmp = text.split(' ')
@@ -18,11 +24,13 @@ def remove_stop_words(corpus):
             if stop_word in tmp:
                 tmp.remove(stop_word)
         results.append(" ".join(tmp))
-    
+    print(results)
     return results
 
-corpus = remove_stop_words(corpus) '''
-corpus = x
+x = remove_stop_words(x)
+X_train , X_test = train_test_split(x,test_size = 0.33 , shuffle =False)
+
+corpus = X_train
 words = []
 for text in corpus:
     for word in text.split(' '):
@@ -33,6 +41,7 @@ words = set(words)
 print(words)
 
 word2int = {}
+
 
 for i,word in enumerate(words):
     word2int[word] = i
@@ -50,7 +59,6 @@ for sentence in sentences:
             if neighbor != word:
                 data.append([word, neighbor])
 
-import pandas as pd
 for text in corpus:
     print(text)
 
@@ -63,8 +71,7 @@ print(df.shape)
 
 print(word2int)
 
-import tensorflow as tf
-import numpy as np
+
 
 ONE_HOT_DIM = len(words)
 
@@ -76,10 +83,13 @@ def to_one_hot_encoding(data_point_index):
 
 X = [] # input word
 Y = [] # target word
+try:
+    for x, y in zip(df['input'], df['label']):
+        X.append(to_one_hot_encoding(word2int[ x ]))
+        Y.append(to_one_hot_encoding(word2int[ y ]))
+except KeyError as ex:
+    print(word2int[ y ])
 
-for x, y in zip(df['input'], df['label']):
-    X.append(to_one_hot_encoding(word2int[ x ]))
-    Y.append(to_one_hot_encoding(word2int[ y ]))
 
 # convert them to numpy arrays
 X_train = np.asarray(X)
