@@ -1,23 +1,20 @@
 import numpy as np
-import re
+import re,os
 from collections import defaultdict
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 import pandas as pd
-from guizero import App, Slider, TextBox
-import dill
-import numpy as np
-from sklearn.model_selection import train_test_split
 
 
 class word2vec():
-    def __init__(self):
+    def __init__ (self):
         self.n = settings['n']
         self.eta = settings['learning_rate']
         self.epochs = settings['epochs']
         self.window = settings['window_size']
         pass
-
+    
+    
     # GENERATE TRAINING DATA
     def generate_training_data(self, settings, corpus):
 
@@ -30,7 +27,7 @@ class word2vec():
         self.v_count = len(word_counts.keys())
 
         # GENERATE LOOKUP DICTIONARIES
-        self.words_list = sorted(list(word_counts.keys()), reverse=False)
+        self.words_list = sorted(list(word_counts.keys()),reverse=False)
         self.word_index = dict((word, i) for i, word in enumerate(self.words_list))
         self.index_word = dict((i, word) for i, word in enumerate(self.words_list))
 
@@ -41,22 +38,24 @@ class word2vec():
 
             # CYCLE THROUGH EACH WORD IN SENTENCE
             for i, word in enumerate(sentence):
-
-                # w_target  = sentence[i]
+                
+                #w_target  = sentence[i]
                 w_target = self.word2onehot(sentence[i])
 
                 # CYCLE THROUGH CONTEXT WINDOW
                 w_context = []
-                for j in range(i - self.window, i + self.window + 1):
-                    if j != i and j <= sent_len - 1 and j >= 0:
+                for j in range(i-self.window, i+self.window+1):
+                    if j!=i and j<=sent_len-1 and j>=0:
                         w_context.append(self.word2onehot(sentence[j]))
                 training_data.append([w_target, w_context])
         return np.array(training_data)
+
 
     # SOFTMAX ACTIVATION FUNCTION
     def softmax(self, x):
         e_x = np.exp(x - np.max(x))
         return e_x / e_x.sum(axis=0)
+
 
     # CONVERT WORD TO ONE HOT ENCODING
     def word2onehot(self, word):
@@ -65,16 +64,18 @@ class word2vec():
         word_vec[word_index] = 1
         return word_vec
 
+
     # FORWARD PASS
     def forward_pass(self, x):
         h = np.dot(self.w1.T, x)
         u = np.dot(self.w2.T, h)
         y_c = self.softmax(u)
         return y_c, h, u
+                
 
     # BACKPROPAGATION
     def backprop(self, e, h, x):
-        dl_dw2 = np.outer(h, e)
+        dl_dw2 = np.outer(h, e)  
         dl_dw1 = np.outer(x, np.dot(self.w2, e.T))
 
         # UPDATE WEIGHTS
@@ -82,12 +83,13 @@ class word2vec():
         self.w2 = self.w2 - (self.eta * dl_dw2)
         pass
 
+
     # TRAIN W2V model
     def train(self, training_data):
         # INITIALIZE WEIGHT MATRICES
-        self.w1 = np.random.uniform(-0.8, 0.8, (self.v_count, self.n))  # context matrix
-        self.w2 = np.random.uniform(-0.8, 0.8, (self.n, self.v_count))  # embedding matrix
-
+        self.w1 = np.random.uniform(-0.8, 0.8, (self.v_count, self.n))     # context matrix
+        self.w2 = np.random.uniform(-0.8, 0.8, (self.n, self.v_count))     # embedding matrix
+        
         # CYCLE THROUGH EACH EPOCH
         for i in range(0, self.epochs):
 
@@ -95,9 +97,10 @@ class word2vec():
 
             # CYCLE THROUGH EACH TRAINING SAMPLE
             for w_t, w_c in training_data:
+
                 # FORWARD PASS
                 y_pred, h, u = self.forward_pass(w_t)
-
+                
                 # CALCULATE ERROR
                 EI = np.sum([np.subtract(y_pred, word) for word in w_c], axis=0)
 
@@ -106,17 +109,18 @@ class word2vec():
 
                 # CALCULATE LOSS
                 self.loss += -np.sum([u[word.index(1)] for word in w_c]) + len(w_c) * np.log(np.sum(np.exp(u)))
-                self.loss += -2 * np.log(len(w_c)) - np.sum([u[word.index(1)] for word in w_c]) + (
-                            len(w_c) * np.log(np.sum(np.exp(u))))
-
-            print('EPOCH:', i, 'LOSS:', self.loss)
+                self.loss += -2*np.log(len(w_c)) -np.sum([u[word.index(1)] for word in w_c]) + (len(w_c) * np.log(np.sum(np.exp(u))))
+                
+            print('EPOCH:',i, 'LOSS:', self.loss)
         pass
+
 
     # input a word, returns a vector (if available)
     def word_vec(self, word):
         w_index = self.word_index[word]
         v_w = self.w1[w_index]
         return v_w
+
 
     # input a vector, returns nearest word(s)
     def vec_sim(self, vec, top_n):
@@ -132,15 +136,15 @@ class word2vec():
             word = self.index_word[i]
             word_sim[word] = theta
 
-        words_sorted = sorted(word_sim.items(), key=lambda word, sim: sim, reverse=True)
+        words_sorted = sorted(word_sim.items(), key=lambda word, sim:sim, reverse=True)
         for word, sim in words_sorted[:top_n]:
-            print('vec_sim', word, sim)
-
+            print('vec_sim',word, sim)
+            
         pass
 
     # input word, returns top [n] most similar words
     def word_sim(self, word, top_n):
-
+        
         w1_index = self.word_index[word]
         v_w1 = self.w1[w1_index]
 
@@ -155,49 +159,25 @@ class word2vec():
             word = self.index_word[i]
             word_sim[word] = theta
 
-        words_sorted = sorted(word_sim.items(), key=lambda word, sim: sim, reverse=True)
+        words_sorted = sorted(word_sim.items(), key=lambda word, sim:sim, reverse=True)
 
         for word, sim in words_sorted[:top_n]:
-            print('word_sim', word, sim)
-
+            print('word_sim',word, sim)
+            
         pass
 
-
-with open('motion_capture_20181011-1931.dill', 'rb') as f:
-    x = dill.load(f)
-vec = [l[4] for l in x]
-# print(len(vec))
-
-x = map(str, vec)
-x = list(x)
-
-
-def remove_stop_words(corpus):
-    stop_words = [', ']
-    results = []
-    for text in corpus:
-        tmp = text.split(' ')
-        for stop_word in stop_words:
-            if stop_word in tmp:
-                tmp.remove(stop_word)
-        results.append(" ".join(tmp))
-    print(results)
-    return results
-
-
-#x = remove_stop_words(x)
-X_train, X_test = train_test_split(x, test_size=0.33, shuffle=False)
+#--- EXAMPLE RUN --------------------------------------------------------------+
 
 settings = {}
-settings['n'] = 2  # dimension of word embeddings
-settings['window_size'] = 2  # context window +/- center word
-settings['min_count'] = 0  # minimum word count
-settings['epochs'] = 10  # number of training epochs
-settings['neg_samp'] = 10  # number of negative words to use during training
-settings['learning_rate'] = 0.01  # learning rate
-np.random.seed(0)  # set the seed for reproducibility
+settings['n'] = 5                   # dimension of word embeddings
+settings['window_size'] = 2         # context window +/- center word
+settings['min_count'] = 0           # minimum word count
+settings['epochs'] = 1000           # number of training epochs
+settings['neg_samp'] = 10           # number of negative words to use during training
+settings['learning_rate'] = 0.01    # learning rate
+np.random.seed(0)                   # set the seed for reproducibility
 
-corpus = [X_train]
+corpus = [['the','quick','brown','fox','jumped','over','the','lazy','dog']]
 
 # INITIALIZE W2V MODEL
 w2v = word2vec()
@@ -208,9 +188,18 @@ training_data = w2v.generate_training_data(settings, corpus)
 # train word2vec model
 w2v.train(training_data)
 
-print('Training data length', len(training_data))
-print('Training data 0', training_data[0])
+if not os.path.exists("trained"):
+    os.makedirs("trained")
 
-print ('Vector of the word',w2v.word_vec(X_test[0]))
+#w2v.save(os.path.join("trained", "words2vec.w2v"))
 
-# --- END ----------------------------------------------------------------------+
+print ('Training data length',len(training_data))
+print ('Training data 0',training_data[0])
+print ('Vector of the word',w2v.word_vec('the'))
+print ('Vector of the word',w2v.word_vec('quick'))
+
+#words2vec = w2v.Word2Vec.load(os.path.join("trained", "words.w2v"))
+#tsne = sklearn.manifold.TSNE(n_components=2, random_state=0)
+
+#tsne = sklearn.manifold.TSNE(n_components=2, random_state=0)
+#--- END ----------------------------------------------------------------------+
