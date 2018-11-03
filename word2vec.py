@@ -1,6 +1,6 @@
 from collections import defaultdict
+
 import dill
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -85,9 +85,6 @@ class word2vec():
         self.w1 = np.random.uniform(-0.8, 0.8, (self.v_count, self.n))  # context matrix
         self.w2 = np.random.uniform(-0.8, 0.8, (self.n, self.v_count))  # embedding matrix
 
-        #self.w1 = tf.Variable(tf.random_uniform(-0.8, 0.8, (self.v_count, self.n)))
-        #self.w1 = tf.Variable(tf.random_uniform(-0.8, 0.8, (self.n, self.v_count)))
-
         # CYCLE THROUGH EACH EPOCH
         for i in range(0, self.epochs):
 
@@ -107,7 +104,7 @@ class word2vec():
                 # CALCULATE LOSS
                 self.loss += -np.sum([u[word.index(1)] for word in w_c]) + len(w_c) * np.log(np.sum(np.exp(u)))
                 self.loss += -2 * np.log(len(w_c)) - np.sum([u[word.index(1)] for word in w_c]) + (
-                            len(w_c) * np.log(np.sum(np.exp(u))))
+                        len(w_c) * np.log(np.sum(np.exp(u))))
 
             print('EPOCH:', i, 'LOSS:', self.loss)
         return self.w1
@@ -184,11 +181,13 @@ def remove_stop_words(corpus):
     print(results)
     return results
 
-def vec_word(self,w2v,vec):
-    w2v =word2vec()
-    w2v.vec_sim(self,vec,top_n=3)
 
-#x = remove_stop_words(x)
+def vec_word(self, w2v, vec):
+    w2v = word2vec()
+    w2v.vec_sim(self, vec, top_n=3)
+
+
+# x = remove_stop_words(x)
 X_train, X_test = train_test_split(x, test_size=0.33, shuffle=False)
 
 settings = {}
@@ -210,12 +209,11 @@ training_data = w2v.generate_training_data(settings, corpus)
 
 # train word2vec model
 w1 = w2v.train(training_data)
+W1 = tf.Variable(w1, name="W1")
+tf.add_to_collection('vars', W1)
 
-W1 = tf.Variable(w1 , name="W1")
-
-w1 = tf.convert_to_tensor(w1)
-
-#save model
+print(W1.shape)
+# save model
 sess = tf.Session()
 init = tf.global_variables_initializer()
 saver = tf.train.Saver()
@@ -227,7 +225,7 @@ with tf.Session() as sess:
     save_path = saver.save(sess, "./model.ckpt")
     print("Model saved in path: %s" % save_path)
 
-w2v_df = pd.DataFrame(vectors, columns = ['x1', 'x2'])
+w2v_df = pd.DataFrame(vectors, columns=['x1', 'x2'])
 print(w2v_df)
 
 # --- END ----------------------------------------------------------------------+
