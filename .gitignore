@@ -6,7 +6,7 @@ __pycache__/
 # C extensions
 *.so
 *.cache
-*.dll
+*.dill
 *.exe
 *.pdb
 /build/
