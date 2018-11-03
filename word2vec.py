@@ -85,7 +85,8 @@ class word2vec():
         self.w1 = np.random.uniform(-0.8, 0.8, (self.v_count, self.n))  # context matrix
         self.w2 = np.random.uniform(-0.8, 0.8, (self.n, self.v_count))  # embedding matrix
 
-
+        #self.w1 = tf.Variable(tf.random_uniform(-0.8, 0.8, (self.v_count, self.n)))
+        #self.w1 = tf.Variable(tf.random_uniform(-0.8, 0.8, (self.n, self.v_count)))
 
         # CYCLE THROUGH EACH EPOCH
         for i in range(0, self.epochs):
@@ -207,24 +208,24 @@ w2v = word2vec()
 # generate training data
 training_data = w2v.generate_training_data(settings, corpus)
 
-#save model
-sess = tf.Session()
-init = tf.global_variables_initializer()
-sess.run(init)
-saver = tf.train.Saver()
-
-
 # train word2vec model
 w1 = w2v.train(training_data)
 
-vectors = sess.run(tf.convert_to_tensor(w1))
-print(vectors)
+W1 = tf.Variable(w1 , name="W1")
+
+w1 = tf.convert_to_tensor(w1)
+
+#save model
+sess = tf.Session()
+init = tf.global_variables_initializer()
+saver = tf.train.Saver()
 
 with tf.Session() as sess:
-  vectors = sess.run(tf.convert_to_tensor(w1))
-  print(vectors)
-  save_path = saver.save(sess, "model.ckpt")
-  print("Model saved in path: %s" % save_path)
+    sess.run(init)
+    vectors = sess.run(tf.convert_to_tensor(w1))
+    print(vectors)
+    save_path = saver.save(sess, "./model.ckpt")
+    print("Model saved in path: %s" % save_path)
 
 w2v_df = pd.DataFrame(vectors, columns = ['x1', 'x2'])
 print(w2v_df)
