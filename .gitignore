@@ -119,6 +119,7 @@ venv.bak/
 *.dll
 *.txt
 *.png
+*.dll
 
 ### JupyterNotebook ###
 .ipynb_checkpoints
