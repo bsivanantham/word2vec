@@ -129,7 +129,8 @@ class word2vec():
             word = self.index_word[i]
             word_sim[word] = theta
 
-        words_sorted = sorted(word_sim.items(), key=lambda word, sim: sim, reverse=True)
+        words_sorted = sorted(word_sim.items(), reverse=True)
+        # words_sorted = sorted(word_sim.items(), key=lambda word, sim: sim, reverse=True)
         for word, sim in words_sorted[:top_n]:
             print('vec_sim', word, sim)
 
@@ -228,4 +229,5 @@ with tf.Session() as sess:
 w2v_df = pd.DataFrame(vectors, columns=['x1', 'x2'])
 print(w2v_df)
 
+w2v.vec_sim(vectors[1],5)
 # --- END ----------------------------------------------------------------------+
