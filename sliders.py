@@ -42,6 +42,7 @@ class NewScale(tk.Frame):
         value = locale.format_string('%.*f', (self.digits, value))
         self.scale_label.configure(text=value)
 
+
 if __name__ == '__main__':
     master = tk.Tk()
     master.geometry("500x500")
