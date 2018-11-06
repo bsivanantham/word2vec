@@ -1,9 +1,8 @@
-from modelrestore import v_
-
-#print(v_)
-from tkinter import *
-import tkinter as tk
+# print(v_)
 import locale
+import tkinter as tk
+from tkinter import *
+
 
 class NewScale(tk.Frame):
     def __init__(self, master=None, **options):
@@ -49,13 +48,12 @@ if __name__ == '__main__':
     display_text = tk.StringVar()
     display = tk.Label(master, textvariable=display_text)
 
-
     w1 = NewScale(master, from_=-2, to=1, resolution=0.000001)
     w2 = NewScale(master, from_=-2, to=1, resolution=0.000001)
     T = Text(master, height=2, width=30)
     w1.pack(side=LEFT, expand=True)
     w2.pack(side=LEFT, expand=True)
-    T.pack(side=LEFT,padx=10)
+    T.pack(side=LEFT, padx=10)
     display.pack()
 
     display_text.set("Output vector")

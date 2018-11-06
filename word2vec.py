@@ -229,5 +229,7 @@ with tf.Session() as sess:
 w2v_df = pd.DataFrame(vectors, columns=['x1', 'x2'])
 print(w2v_df)
 
-w2v.vec_sim(vectors[1],5)
+def vec2word(vector,first_n):
+    w2v.vec_sim(vector, first_n)
+
 # --- END ----------------------------------------------------------------------+
