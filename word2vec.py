@@ -189,18 +189,18 @@ def vec_word(self, w2v, vec):
 
 
 # x = remove_stop_words(x)
-X_train, X_test = train_test_split(x, test_size=0.33, shuffle=False)
+#X_train, X_test = train_test_split(x, test_size=0.33, shuffle=False)
 
 settings = {}
 settings['n'] = 2  # dimension of word embeddings
 settings['window_size'] = 2  # context window +/- center word
 settings['min_count'] = 0  # minimum word count
-settings['epochs'] = 10  # number of training epochs
+settings['epochs'] = 10000  # number of training epochs
 settings['neg_samp'] = 10  # number of negative words to use during training
 settings['learning_rate'] = 0.01  # learning rate
 np.random.seed(0)  # set the seed for reproducibility
 
-corpus = [X_train]
+corpus = [x]
 
 # INITIALIZE W2V MODEL
 w2v = word2vec()

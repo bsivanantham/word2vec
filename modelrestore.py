@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from collections import defaultdict
 
+
 from sklearn.model_selection import train_test_split
 
 with open('motion_capture_20181011-1931.dill', 'rb') as f:
@@ -43,6 +44,7 @@ index_word = dict((i, word) for i, word in enumerate(words_list))
 def vec_sim(vec, top_n):
     # CYCLE THROUGH VOCAB
     word_sim = {}
+    output = []
     for i in range(v_count):
         v_w2 = w1[i]
         theta_num = np.dot(vec, v_w2)
@@ -56,7 +58,11 @@ def vec_sim(vec, top_n):
     # words_sorted = sorted(word_sim.items(), key=lambda word, sim: sim, reverse=True)
     for word, sim in words_sorted[:top_n]:
         print('vec_sim', word, sim)
+        output.append(word)
+        output.append(sim)
 
-    pass
+    return output
 
-vec_sim( [ 0.17751375,-0.39359147] , 5)
+corpus = [(1,1)]
+output = vec_sim(corpus,1)
+print(output)

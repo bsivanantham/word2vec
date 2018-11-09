@@ -2,6 +2,7 @@
 import locale
 import tkinter as tk
 from tkinter import *
+from modelrestore import vec_sim
 
 
 class NewScale(tk.Frame):
@@ -24,7 +25,7 @@ class NewScale(tk.Frame):
             self.digits = ['digits']
             del options['digits']
         else:
-            self.digits = 2
+            self.digits = 5
 
         self.scale = tk.Scale(self, **options)
         self.scale_label = tk.Label(self)
@@ -41,20 +42,61 @@ class NewScale(tk.Frame):
         value = locale.format_string('%.*f', (self.digits, value))
         self.scale_label.configure(text=value)
 
+def sel():
+   selection1 = "Value = " + str(var1.get()*0.000001)
+   selection2 = "Value = " + str(var2.get()*0.000001)
+   vec.append(var1.get()*0.000001)
+   vec.append(var2.get()*0.000001)
+
+   label1.config(text = selection1)
+   label2.config(text = selection2)
+
+   output = vec_sim(vec,5)
+   for i in range (len(output)):
+       mylist.insert(END,str(output[i]))
+
 
 if __name__ == '__main__':
     master = tk.Tk()
     master.geometry("500x500")
-    display_text = tk.StringVar()
-    display = tk.Label(master, textvariable=display_text)
+    #display_text = tk.StringVar()
+    #display = tk.Label(master, textvariable=display_text)
+    var1 = DoubleVar()
+    var2 = DoubleVar()
+    frame = Frame(master)
+    frame.pack()
+    vec = []
+    bottomframe = Frame(master)
+    bottomframe.pack(side=LEFT)
 
-    w1 = NewScale(master, from_=-2, to=1, resolution=0.000001)
-    w2 = NewScale(master, from_=-2, to=1, resolution=0.000001)
-    T = Text(master, height=2, width=30)
-    w1.pack(side=LEFT, expand=True)
-    w2.pack(side=LEFT, expand=True)
-    T.pack(side=LEFT, padx=10)
-    display.pack()
+    topframe = Frame(master)
+    topframe.pack(side=LEFT)
 
-    display_text.set("Output vector")
+    scrollbar = Scrollbar(master)
+    scrollbar.pack(side=RIGHT, fill=Y,expand=True)
+    mylist = Text(master,wrap=WORD, yscrollcommand=scrollbar.set)
+    mylist.pack(side=LEFT, fill=BOTH ,expand=True)
+    scrollbar.config(command=mylist.yview)
+
+    w1 = NewScale(topframe, from_=-2, to=1, resolution=0.000001,variable = var1 )
+    w2 = NewScale(bottomframe, from_=-2, to=1, resolution=0.000001,variable = var2 )
+    #T = Text(topframe, height=2, width=30)
+    button1 = Button(topframe, text="Get Scale Value", command=sel)
+    button2 = Button(bottomframe, text="Get Scale Value", command=sel)
+    label1 = Label(topframe)
+    label2 = Label(bottomframe)
+
+    w1.pack(anchor=CENTER, expand=True)
+    button1.pack(anchor=CENTER)
+    label1.pack(anchor=CENTER)
+
+    w2.pack(anchor=CENTER, expand=True)
+    button2.pack(anchor=CENTER)
+    label2.pack(anchor=CENTER)
+
+
+    #T.pack(side=LEFT, padx=10)
+    #display.pack()
+
     master.mainloop()
+
