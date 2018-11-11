@@ -14,9 +14,9 @@ vec = [l[4] for l in x]
 x = map(str, vec)
 x = list(x)
 
-X_train, X_test = train_test_split(x, test_size=0.33, shuffle=False)
+#X_train, X_test = train_test_split(x, test_size=0.33, shuffle=False)
 
-corpus = [X_test]
+corpus = [x]
 
 #restore model for testing
 sess = tf.Session()
