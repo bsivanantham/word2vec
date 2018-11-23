@@ -161,14 +161,14 @@ class word2vec():
         pass
 
 
-with open('resultstatsDF.dill', 'rb') as f:
+with open('resultround.dill', 'rb') as f:
     x = dill.load(f)
-vec = [l[4] for l in x]
+#vec = [l[4] for l in x]
 # print(len(vec))
 
-x = map(str, vec)
+x = map(str, x)
 x = list(x)
-
+print(x)
 
 def remove_stop_words(corpus):
     stop_words = [', ']
