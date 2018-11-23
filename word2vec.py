@@ -161,7 +161,7 @@ class word2vec():
         pass
 
 
-with open('motion_capture_20181011-1931.dill', 'rb') as f:
+with open('resultstatsDF.dill', 'rb') as f:
     x = dill.load(f)
 vec = [l[4] for l in x]
 # print(len(vec))
@@ -223,7 +223,7 @@ with tf.Session() as sess:
     sess.run(init)
     vectors = sess.run(tf.convert_to_tensor(w1))
     print(vectors)
-    save_path = saver.save(sess, "./model.ckpt")
+    save_path = saver.save(sess, "./modelwithint.ckpt")
     print("Model saved in path: %s" % save_path)
 
 w2v_df = pd.DataFrame(vectors, columns=['x1', 'x2'])
