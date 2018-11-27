@@ -1,0 +1,24 @@
+ip-129-70-134-102.Wired.Dyn.CIT-EC.NET
+
+/Users/anmelnik/prj/0123Andrew/L2R
+
+posix.uname_result(sysname='Darwin', nodename='ip-129-70-134-102.Wired.Dyn.CIT-EC.NET', release='17.7.0', version='Darwin Kernel Version 17.7.0: Thu Jun 21 22:53:14 PDT 2018; root:xnu-4570.71.2~1/RELEASE_X86_64', machine='x86_64')
+
+{'accuracy': 5e-05,
+ 'action_repeat_chance': 0.04,
+ 'actor_layers': [128, 128],
+ 'critic_layers': [128, 128],
+ 'difficulty': 0,
+ 'episodes': 5,
+ 'layer_norm': False,
+ 'modeldim': '2D',
+ 'motion_capture_trg': 1,
+ 'plot': 0,
+ 'proj': '2DPro31',
+ 'prosthetic': 1,
+ 'reward_func': '3D_penAdd2f_VelMass',
+ 'saveplots': 0,
+ 'skip_frame': 3,
+ 'visualize': True,
+ 'weights': 'weights/20180903-1555/weights_updates_1416442_reward_3707.8_pelvis_X_37.5.pkl'}
+

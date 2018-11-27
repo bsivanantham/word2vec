@@ -119,24 +119,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-### Data ###
-*.csv
-*.dat
-*.efx
-*.gbr
-*.key
-*.pps
-*.ppt
-*.pptx
-*.sdf
-*.tax2010
-*.vcf
-*.xml
-*.dll
-*.txt
-*.png
-*.dll
-
 ### JupyterNotebook ###
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
